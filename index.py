@@ -9,11 +9,11 @@ from linebot.exceptions import (
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
+
 import requests
 
 def checkword(w):
-    
-        url = 'https://www.moedict.tw/uni/' + w
+    url = 'https://www.moedict.tw/uni/' + w
     r = requests.get(url)
     datas = r.json()
     msg = '國字：' + datas['title'] + '\n'
