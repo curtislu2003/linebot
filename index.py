@@ -9,6 +9,27 @@ from linebot.exceptions import (
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
+import requests
+
+def checkword(w):
+    
+    w = input("請輸入要查詢的國字：")
+    url = 'https://www.moedict.tw/uni/' + w
+    r = requests.get(url)
+    datas = r.json()
+    msg = '國字：' + datas['title'] + '\n'
+    msg += '部首：' + datas['radical'] + '\n'
+    msg += '筆劃：' + str(datas['stroke_count']) + '\n\n'
+    for i in range(len(datas['heteronyms'])):
+        msg += '注音：' + datas['heteronyms'][i]['bopomofo'] + '\n'
+        msg += '拼音：' + datas['heteronyms'][i]['pinyin'] + '\n'    
+        for j in range(len(datas['heteronyms'][i]['definitions'])):
+            if 'type' in datas['heteronyms'][i]['definitions'][j]:
+                msg += '[{}] {}\n'.format(
+                    datas['heteronyms'][i]['definitions'][j]['type'],
+                    datas['heteronyms'][i]['definitions'][j]['def'])
+        msg += '\n'
+    return msg
 
 app = Flask(__name__)
 
@@ -35,7 +56,7 @@ def callback():
     return 'OK'
 
 
-@handler1.add(MessageEvent, message=TextMessage)
+@handler1.add(MessageEvent, message=checkword(w))
 def handle_message(event):
     line_bot_api.reply_message(
         event.reply_token,
