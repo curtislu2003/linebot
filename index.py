@@ -13,8 +13,7 @@ import requests
 
 def checkword(w):
     
-    w = input("請輸入要查詢的國字：")
-    url = 'https://www.moedict.tw/uni/' + w
+        url = 'https://www.moedict.tw/uni/' + w
     r = requests.get(url)
     datas = r.json()
     msg = '國字：' + datas['title'] + '\n'
@@ -56,11 +55,11 @@ def callback():
     return 'OK'
 
 
-@handler1.add(MessageEvent, message=checkword(w))
+@handler1.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=event.message.text))
+        TextSendMessage(text=checkword(event.message.text)))
 
 
 if __name__ == "__main__":
